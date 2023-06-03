@@ -34,14 +34,26 @@ apiHeader['t']=str(t)
 apiHeader['sign']=str(sign, 'utf-8')
 apiHeader['nonce']=str(nonce)
 
+##いらない！！！
+# response1=\
+#     requests.get("https://api.switch-bot.com/v1.1/devices",headers=apiHeader)
+# print(response1.text)
 
-response1=\
-    requests.get("https://api.switch-bot.com/v1.1/devices",headers=apiHeader)
-print(response1.text)
+# response2=\
+#     requests.get("https://api.switch-bot.com/v1.1/devices/"+os.environ["DEVICE"]+"/status",headers=apiHeader)
+# print(response2.text)
 
-response2=\
-    requests.get("https://api.switch-bot.com/v1.1/devices/"+os.environ["DEVICE"]+"/status",headers=apiHeader)
-print(response2.text)
+
+def get_power():
+    try:
+        res=requests.get("https://api.switch-bot.com/v1.1/devices/"+os.environ["DEVICE"]+"/status",headers=apiHeader)
+        res.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        print(e)
+    else:
+        json_res=res.json() 
+    power=json_res["body"]["power"]
+    return power
 
 def get_weather():
     try:
@@ -56,7 +68,9 @@ def get_weather():
     for w in rain:
         if not rain[w]=='--%':
             return rain[w]
-        
+
+power=get_power()
+
 def rgb_set(rain):
     if rain == "0%":
         lightOn('255:128:0')
@@ -85,7 +99,7 @@ def lightOn(rgb):
     turnOn={
         "command":"turnOn",
         "parameter":"default",
-        "commandType":"command"
+       "commandType":"command"
     }
     turnOff={
         "command":"turnOff",
@@ -97,13 +111,13 @@ def lightOn(rgb):
     "parameter":rgb,
     "commandType":"command"
     }
-
-    try:
-        post = requests.post("https://api.switch-bot.com/v1.1/devices/"+os.environ["DEVICE"]+"/commands",headers=apiHeader,json=setColor)
-        post.raise_for_status()
-        print(post.text)
-    except requests.exceptions.RequestException as e:
-        print('response error:',e)
+    if power=="on":
+        try:
+            post = requests.post("https://api.switch-bot.com/v1.1/devices/"+os.environ["DEVICE"]+"/commands",headers=apiHeader,json=setColor)
+            post.raise_for_status()
+            print(post.text)
+        except requests.exceptions.RequestException as e:
+            print('response error:',e)
 
 weather=get_weather()
 print(json.dumps(weather,indent=1,ensure_ascii=False))
