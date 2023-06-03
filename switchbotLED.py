@@ -69,7 +69,6 @@ def get_weather():
         if not rain[w]=='--%':
             return rain[w]
 
-power=get_power()
 
 def rgb_set(rain):
     if rain == "0%":
@@ -111,14 +110,14 @@ def lightOn(rgb):
     "parameter":rgb,
     "commandType":"command"
     }
-    if power=="on":
-        try:
-            post = requests.post("https://api.switch-bot.com/v1.1/devices/"+os.environ["DEVICE"]+"/commands",headers=apiHeader,json=setColor)
-            post.raise_for_status()
-            print(post.text)
-        except requests.exceptions.RequestException as e:
-            print('response error:',e)
+    try:
+        post = requests.post("https://api.switch-bot.com/v1.1/devices/"+os.environ["DEVICE"]+"/commands",headers=apiHeader,json=setColor)
+        post.raise_for_status()
+        print(post.text)
+    except requests.exceptions.RequestException as e:
+        print('response error:',e)
 
-weather=get_weather()
-print(json.dumps(weather,indent=1,ensure_ascii=False))
-rgb_set(weather)
+if get_power()=="on":
+    weather=get_weather()
+    print(json.dumps(weather,indent=1,ensure_ascii=False))
+    rgb_set(weather)
