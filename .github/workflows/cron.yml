@@ -22,9 +22,9 @@ jobs:
 
       - name: Run script
         env:
-          SWITCHBOT_ACCESS_TOKEN: ${{ secrets.SWITCHBOT_TOKEN }}
-          SWITCHBOT_SECRET: ${{ secrets.SECRET }}
-          SWITCHBOT_DEVICE_ID: ${{ secrets.DEVICE }}
-          WEATHER_CITY_CODE: ${{ secrets.CITY_CODE }}
+          SWITCHBOT_TOKEN: ${{ secrets.SWITCHBOT_TOKEN }}
+          SECRET: ${{ secrets.SECRET }}
+          DEVICE: ${{ secrets.DEVICE }}
+          CITY_CODE: ${{ secrets.CITY_CODE }}
         run: |
           python -m switchbotLED
