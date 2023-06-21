@@ -120,4 +120,4 @@ def lightOn(rgb):
 if get_power()=="on":
     weather=get_weather()
     print(json.dumps(weather,indent=1,ensure_ascii=False))
-    rgb_set("100%")
+    rgb_set(weather)
